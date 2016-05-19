@@ -15,8 +15,7 @@ import (
 )
 
 //RemoveFromGroup removes a given track from a group
-func RemoveFromGroup(track sc.Track, client *sc.Client,
-	group sc.Group, addChannel chan sc.Group, wg *sync.WaitGroup) {
+func RemoveFromGroup(track sc.Track, client *sc.Client, group sc.Group, wg *sync.WaitGroup) {
 	defer wg.Done()
 	resp, err := client.RemoveFromGroup(group.ID, track.ID)
 	fmt.Printf("\n\033[1;33m[INFO]\tRemoved %s from %s with response: %d\n", track.Title, group.Name, resp)
@@ -25,14 +24,11 @@ func RemoveFromGroup(track sc.Track, client *sc.Client,
 		// log this kind of error
 		return
 	}
-	addChannel <- group
 }
 
 //AddToGroup to the group from the rmv group lists
-func AddToGroup(track sc.Track, client *sc.Client,
-	addChannel chan sc.Group, wg *sync.WaitGroup) {
+func AddToGroup(track sc.Track, client *sc.Client, group sc.Group, wg *sync.WaitGroup) {
 	defer wg.Done()
-	group := <-addChannel
 	resp, err := client.AddToGroup(group.ID, track.ID)
 	if err != nil || resp != 201 {
 		log.Printf("\033[0;31m[ERROR]\tThere was an error in the adding of group: %s.\n", group.Name)
