@@ -11,14 +11,12 @@ import (
 	"time"
 
 	"github.com/jsmith312/dblib"
-	"github.com/jsmith312/go-soundcloud-api"
-	"github.com/jsmith312/go-soundcloud-api/group"
-	"github.com/jsmith312/go-soundcloud-api/track"
+	sc "github.com/jsmith312/soundcloud-api"
 )
 
 //RemoveFromGroup removes a given track from a group
-func RemoveFromGroup(track track.Track, client *soundcloud.Client,
-	group group.Group, addChannel chan group.Group, wg *sync.WaitGroup) {
+func RemoveFromGroup(track sc.Track, client *sc.Client,
+	group sc.Group, addChannel chan sc.Group, wg *sync.WaitGroup) {
 	defer wg.Done()
 	resp, err := client.RemoveFromGroup(group.ID, track.ID)
 	fmt.Printf("\n\033[1;33m[INFO]\tRemoved %s from %s with response: %d\n", track.Title, group.Name, resp)
@@ -31,8 +29,8 @@ func RemoveFromGroup(track track.Track, client *soundcloud.Client,
 }
 
 //AddToGroup to the group from the rmv group lists
-func AddToGroup(track track.Track, client *soundcloud.Client,
-	addChannel chan group.Group, wg *sync.WaitGroup) {
+func AddToGroup(track sc.Track, client *sc.Client,
+	addChannel chan sc.Group, wg *sync.WaitGroup) {
 	defer wg.Done()
 	group := <-addChannel
 	resp, err := client.AddToGroup(group.ID, track.ID)
@@ -45,7 +43,7 @@ func AddToGroup(track track.Track, client *soundcloud.Client,
 }
 
 //StoreGroups stores the id and name of the group in the DB
-func StoreGroups(db *sql.DB, groups []group.Group, wg *sync.WaitGroup) {
+func StoreGroups(db *sql.DB, groups []sc.Group, wg *sync.WaitGroup) {
 	defer wg.Done()
 	t1 := time.Now()
 	dblib.StoreItem(db, groups)
