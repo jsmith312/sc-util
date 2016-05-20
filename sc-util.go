@@ -15,8 +15,8 @@ import (
 )
 
 //RemoveFromGroup removes a given track from a group
-func RemoveFromGroup(track sc.Track, client *sc.Client, group sc.Group, wg *sync.WaitGroup) {
-	defer wg.Done()
+func RemoveFromGroup(track sc.Track, client *sc.Client, group sc.Group /*, wg *sync.WaitGroup*/) {
+	//defer wg.Done()
 	resp, err := client.RemoveFromGroup(group.ID, track.ID)
 	fmt.Printf("\n\033[1;33m[INFO]\tRemoved %s from %s with response: %d\n", track.Title, group.Name, resp)
 	if err != nil || resp != 200 {
